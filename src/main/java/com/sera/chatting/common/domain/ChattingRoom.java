@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -30,15 +31,15 @@ public class ChattingRoom {
     @Builder
     private ChattingRoom(String name, String description) {
         this.chattingRoomId = UUID.randomUUID().toString();
+        if (!StringUtils.hasText(name)) {
+            throw new IllegalArgumentException("name is blank");
+        }
         this.name = name;
         this.description = description;
     }
 
 
     public static ChattingRoom createRoom(String name, String description) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("name is empty");
-        }
         return ChattingRoom.builder()
                 .name(name)
                 .description(description)
