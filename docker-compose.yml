@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  mysql:
+    image: 'mysql:latest'
+    container_name: chatting-mysql
+    environment:
+      MYSQL_DATABASE: chatting
+      MYSQL_USER: chatting
+      MYSQL_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: passlocal123
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+

@@ -1,0 +1,15 @@
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/chatting?allowPublicKeyRetrieval=true&useUnicode=true&useSSL=false
+    username: chatting
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
