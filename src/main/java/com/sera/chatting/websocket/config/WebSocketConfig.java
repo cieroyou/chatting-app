@@ -1,6 +1,6 @@
-package com.sera.chatting.config;
+package com.sera.chatting.websocket.config;
 
-import com.sera.chatting.WebSocketHandler;
+import com.sera.chatting.websocket.WebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
