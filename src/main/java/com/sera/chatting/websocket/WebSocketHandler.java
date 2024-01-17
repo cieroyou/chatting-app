@@ -1,10 +1,11 @@
-package com.sera.chatting;
+package com.sera.chatting.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sera.chatting.common.message.CommonEventMessage;
+import com.sera.chatting.common.message.CommonRequestMessage;
+import com.sera.chatting.websocket.service.SocketMessageParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -20,6 +21,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @RequiredArgsConstructor
 public class WebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
+    private final SocketMessageParser socketMessageParser;
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -29,13 +32,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, @NotNull CloseStatus status) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         log.info("afterConnectionClosed: {}", session);
     }
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
         log.info("handleTextMessage: {}", textMessage.getPayload());
-        session.sendMessage(new TextMessage("Hello Client!"));
+        CommonRequestMessage requestMessage = socketMessageParser.getSocketMessage(session, textMessage.getPayload());
+//        session.sendMessage(new TextMessage("Hello Client!"));
     }
 }
