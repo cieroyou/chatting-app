@@ -1,4 +1,4 @@
-package com.sera.chatting.websocket;
+package com.sera.chatting.presentation.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sera.chatting.common.message.CommonEventMessage;
