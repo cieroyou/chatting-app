@@ -7,12 +7,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sera.chatting.application.AckMessageJsonConverter;
-import com.sera.chatting.application.RequestMessageConverter;
-import com.sera.chatting.application.dto.AckBody;
-import com.sera.chatting.application.dto.AckMessage;
+import com.sera.chatting.common.converter.AckMessageJsonConverter;
+import com.sera.chatting.common.converter.RequestMessageConverter;
+import com.sera.chatting.application.dto.common.AckBody;
+import com.sera.chatting.application.dto.common.AckMessage;
 import com.sera.chatting.application.dto.CreateRoomResponse;
-import com.sera.chatting.application.dto.RequestMessage;
+import com.sera.chatting.application.dto.common.RequestMessage;
 import com.sera.chatting.common.message.CommonEventMessage;
 
 import lombok.RequiredArgsConstructor;
@@ -50,6 +50,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		RequestMessage requestMessage = webSocketMessageConverter.convertToRequestMessage(session, payload);
 
 		// 2. 요청에 따른 비즈니스로직 함수 수행하여 리턴값 가져오기
+		String command = requestMessage.getBody().getCommand();
+		if(command.equals("create_room")){
+
+		}else if(command.equals("join_room")){
+
+		}
 		CreateRoomResponse response = new CreateRoomResponse("createdroom-sjskj");
 
 		// 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답

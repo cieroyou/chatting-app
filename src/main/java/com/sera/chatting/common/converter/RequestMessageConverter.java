@@ -1,4 +1,4 @@
-package com.sera.chatting.application;
+package com.sera.chatting.common.converter;
 
 import java.time.Instant;
 
@@ -8,8 +8,8 @@ import org.springframework.web.socket.WebSocketSession;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sera.chatting.application.dto.RequestBody;
-import com.sera.chatting.application.dto.RequestMessage;
+import com.sera.chatting.application.dto.common.RequestBody;
+import com.sera.chatting.application.dto.common.RequestMessage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

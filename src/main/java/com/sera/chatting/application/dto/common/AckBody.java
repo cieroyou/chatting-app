@@ -1,4 +1,4 @@
-package com.sera.chatting.application.dto;
+package com.sera.chatting.application.dto.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
