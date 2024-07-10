@@ -7,12 +7,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sera.chatting.common.converter.AckMessageJsonConverter;
-import com.sera.chatting.common.converter.RequestMessageConverter;
+import com.sera.chatting.application.dto.RoomFacade;
 import com.sera.chatting.application.dto.common.AckBody;
 import com.sera.chatting.application.dto.common.AckMessage;
-import com.sera.chatting.application.dto.CreateRoomResponse;
 import com.sera.chatting.application.dto.common.RequestMessage;
+import com.sera.chatting.common.converter.AckMessageJsonConverter;
+import com.sera.chatting.common.converter.RequestMessageConverter;
 import com.sera.chatting.common.message.CommonEventMessage;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	private final ObjectMapper objectMapper;
 	private final RequestMessageConverter webSocketMessageConverter;
 	private final AckMessageJsonConverter ackMessageJsonConverter;
+	private final RoomFacade roomFacade;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -50,17 +51,22 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		RequestMessage requestMessage = webSocketMessageConverter.convertToRequestMessage(session, payload);
 
 		// 2. 요청에 따른 비즈니스로직 함수 수행하여 리턴값 가져오기
+		AckBody body = null;
 		String command = requestMessage.getBody().getCommand();
-		if(command.equals("create_room")){
+		if (command.equals("create_room")) {
+			var response = roomFacade.createRoom("roomName");
+			body = AckBody.success(response);
 
-		}else if(command.equals("join_room")){
+		} else if (command.equals("join_room")) {
+			String roomId = "sjsksdf";
+			String userId = "shhwhwhs";
+			roomFacade.joinRoom(roomId, userId);
+			body = AckBody.success();
 
 		}
-		CreateRoomResponse response = new CreateRoomResponse("createdroom-sjskj");
 
 		// 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답
-		AckBody ackBody = AckBody.success(response);
-		AckMessage ackMessage = new AckMessage(requestMessage.getTransactionId(), ackBody);
+		AckMessage ackMessage = new AckMessage(requestMessage.getTransactionId(), body);
 
 		String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
 		session.sendMessage(new TextMessage(ackMessageJson));
