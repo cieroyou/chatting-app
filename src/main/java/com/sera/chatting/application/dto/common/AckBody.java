@@ -54,6 +54,10 @@ public class AckBody<T> implements MessageBody {
 		return success(data, null);
 	}
 
+	public static <T> AckBody<T> success() {
+		return success(null, null);
+	}
+
 	public static AckBody fail(String message, String errorCode) {
 		return AckBody.builder()
 			.result(Result.FAIL)
