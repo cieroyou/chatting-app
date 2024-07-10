@@ -7,7 +7,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sera.chatting.application.dto.RoomFacade;
+import com.sera.chatting.application.dto.ChattingRoomFacade;
 import com.sera.chatting.application.dto.common.AckBody;
 import com.sera.chatting.application.dto.common.AckMessage;
 import com.sera.chatting.application.dto.common.RequestMessage;
@@ -29,7 +29,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	private final ObjectMapper objectMapper;
 	private final RequestMessageConverter webSocketMessageConverter;
 	private final AckMessageJsonConverter ackMessageJsonConverter;
-	private final RoomFacade roomFacade;
+	private final ChattingRoomFacade roomFacade;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
