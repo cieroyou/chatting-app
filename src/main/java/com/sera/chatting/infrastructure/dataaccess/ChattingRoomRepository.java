@@ -1,6 +1,6 @@
-package com.sera.chatting.common.dataaccess;
+package com.sera.chatting.infrastructure.dataaccess;
 
-import com.sera.chatting.common.domain.ChattingRoom;
+import com.sera.chatting.domain.ChattingRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChattingRoomRepository extends JpaRepository<ChattingRoom, Long> {

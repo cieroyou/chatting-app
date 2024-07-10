@@ -1,4 +1,4 @@
-package com.sera.chatting.common.domain;
+package com.sera.chatting.domain;
 
 
 import jakarta.persistence.*;
@@ -30,10 +30,10 @@ public class ChattingRoom {
 
     @Builder
     private ChattingRoom(String name, String description) {
-        this.chattingRoomId = UUID.randomUUID().toString();
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name is blank");
         }
+        this.chattingRoomId = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
     }
