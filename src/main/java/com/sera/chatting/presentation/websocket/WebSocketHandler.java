@@ -7,7 +7,11 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sera.chatting.application.AckMessageJsonConverter;
 import com.sera.chatting.application.RequestMessageConverter;
+import com.sera.chatting.application.dto.AckBody;
+import com.sera.chatting.application.dto.AckMessage;
+import com.sera.chatting.application.dto.CreateRoomResponse;
 import com.sera.chatting.application.dto.RequestMessage;
 import com.sera.chatting.common.message.CommonEventMessage;
 
@@ -24,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketHandler extends TextWebSocketHandler {
 	private final ObjectMapper objectMapper;
 	private final RequestMessageConverter webSocketMessageConverter;
+	private final AckMessageJsonConverter ackMessageJsonConverter;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -41,7 +46,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
 		String payload = textMessage.getPayload();
 		log.info("handleTextMessage: {}", payload);
+		// 1. 클라이언트로부터 받은 메세지를 RequestMessage 로 변환
 		RequestMessage requestMessage = webSocketMessageConverter.convertToRequestMessage(session, payload);
-		session.sendMessage(new TextMessage("Hello Client!"));
+
+		// 2. 요청에 따른 비즈니스로직 함수 수행하여 리턴값 가져오기
+		CreateRoomResponse response = new CreateRoomResponse("createdroom-sjskj");
+
+		// 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답
+		AckBody ackBody = AckBody.success(response);
+		AckMessage ackMessage = new AckMessage(requestMessage.getTransactionId(), ackBody);
+
+		String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
+		session.sendMessage(new TextMessage(ackMessageJson));
 	}
 }
