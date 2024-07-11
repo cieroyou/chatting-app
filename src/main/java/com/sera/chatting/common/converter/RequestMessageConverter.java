@@ -8,6 +8,8 @@ import org.springframework.web.socket.WebSocketSession;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sera.chatting.application.dto.CreateRoomRequest;
+import com.sera.chatting.application.dto.JoinRoomRequest;
 import com.sera.chatting.application.dto.common.RequestBody;
 import com.sera.chatting.application.dto.common.RequestMessage;
 
@@ -24,34 +26,53 @@ import lombok.extern.slf4j.Slf4j;
 public class RequestMessageConverter {
 	private final ObjectMapper objectMapper;
 
-	private final String TRANSACTION_ID = "transaction_id";
-	private final String COMMAND = "command";
-	private final String REQUEST = "request";
-	private final String TYPE = "type";
-	private final String BODY = "body";
+	private static final String TRANSACTION_ID = "transaction_id";
+	private static final String COMMAND = "command";
+	private static final String TYPE = "type";
+	private static final String BODY = "body";
+	private static final String REQUEST = "request";
 
 	public RequestMessage convertToRequestMessage(WebSocketSession session, String jsonMessage) throws
 		JsonProcessingException {
 		JsonNode rootNode = objectMapper.readTree(jsonMessage);
 		String transactionId = rootNode.path(TRANSACTION_ID).asText();
 		Instant timestamp = Instant.now();
-		String type = rootNode.path(TYPE).asText();
 		JsonNode bodyNode = rootNode.path(BODY);
 
-		if (!type.equals(REQUEST)) {
+		validateMessage(rootNode);
+
+		String command = bodyNode.path(COMMAND).asText();
+		RequestBody body = getRequestBody(bodyNode, command);
+		return new RequestMessage(transactionId, body, timestamp);
+	}
+
+	private void validateMessage(JsonNode rootNode) {
+		String type = rootNode.path(TYPE).asText();
+		JsonNode bodyNode = rootNode.path(BODY);
+		if (!REQUEST.equals(type)) {
 			log.error("Invalid message type: {}", type);
 			throw new IllegalArgumentException("Invalid message type");
 		}
-		if (bodyNode.isMissingNode()) {
-			log.error("Missing body in message");
-			throw new IllegalArgumentException("Missing body in message");
+
+		if (rootNode.isMissingNode()) {
+			log.error("Missing transaction_id in message");
+			throw new IllegalArgumentException("Missing transaction_id in message");
 		}
 		if (!bodyNode.has(COMMAND)) {
 			log.error("Missing command in body");
 			throw new IllegalArgumentException("Missing command in body");
 		}
-		String command = bodyNode.path(COMMAND).asText();
-		RequestBody body = new RequestBody(command);
-		return new RequestMessage(transactionId, body, timestamp);
+	}
+
+	private RequestBody getRequestBody(JsonNode bodyNode, String command) throws JsonProcessingException {
+		RequestBody body = null;
+		switch (command) {
+			case "create_room" -> body = objectMapper.treeToValue(bodyNode, CreateRoomRequest.class);
+			case "join_room" -> body = objectMapper.treeToValue(bodyNode, JoinRoomRequest.class);
+			default -> throw new IllegalArgumentException("Unsupported command: " + command);
+		}
+		assert body != null;
+		body.setCommand(command);
+		return body;
 	}
 }
