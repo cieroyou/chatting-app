@@ -1,4 +1,4 @@
-package com.sera.chatting.application.dto;
+package com.sera.chatting.application;
 
 import org.springframework.stereotype.Service;
 

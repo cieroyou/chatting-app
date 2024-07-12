@@ -1,5 +1,7 @@
 package com.sera.chatting.presentation.websocket;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -7,10 +9,13 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sera.chatting.application.dto.ChattingRoomFacade;
+import com.sera.chatting.application.ChattingRoomFacade;
 import com.sera.chatting.application.dto.common.AckBody;
+import com.sera.chatting.application.dto.common.AckData;
 import com.sera.chatting.application.dto.common.AckMessage;
+import com.sera.chatting.application.dto.common.RequestBody;
 import com.sera.chatting.application.dto.common.RequestMessage;
+import com.sera.chatting.common.CommandHandler;
 import com.sera.chatting.common.converter.AckMessageJsonConverter;
 import com.sera.chatting.common.converter.RequestMessageConverter;
 import com.sera.chatting.common.message.CommonEventMessage;
@@ -30,6 +35,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	private final RequestMessageConverter webSocketMessageConverter;
 	private final AckMessageJsonConverter ackMessageJsonConverter;
 	private final ChattingRoomFacade roomFacade;
+	private final List<CommandHandler> commandHandlers;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -51,23 +57,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		RequestMessage requestMessage = webSocketMessageConverter.convertToRequestMessage(session, payload);
 
 		// 2. 요청에 따른 비즈니스로직 함수 수행하여 리턴값 가져오기
-		AckBody body = null;
-		String command = requestMessage.getBody().getCommand();
-		if (command.equals("create_room")) {
-			var response = roomFacade.createRoom("roomName");
-			body = AckBody.success(response);
-
-		} else if (command.equals("join_room")) {
-			String roomId = "sjsksdf";
-			String userId = "shhwhwhs";
-			roomFacade.joinRoom(roomId, userId);
-			body = AckBody.success();
-
+		AckBody<AckData> body = null;
+		RequestBody request = requestMessage.getBody();
+		String command = request.getCommand();
+		for (@SuppressWarnings("rawtypes") CommandHandler commandHandler : commandHandlers) {
+			if (commandHandler.supports(command)) {
+				//noinspection unchecked
+				body = commandHandler.handleCommand(session.getId(), request);
+			}
 		}
 
-		// 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답
+		// // 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답
 		AckMessage ackMessage = new AckMessage(requestMessage.getTransactionId(), body);
-
+		//
 		String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
 		session.sendMessage(new TextMessage(ackMessageJson));
 	}
