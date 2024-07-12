@@ -1,5 +1,7 @@
 package com.sera.chatting.application.dto;
 
+import static lombok.AccessLevel.*;
+
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -10,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = PRIVATE)
 public class CreateRoomRequest extends RequestBody implements Serializable {
 	String roomName;
 
