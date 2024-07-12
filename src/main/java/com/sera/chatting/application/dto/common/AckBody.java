@@ -36,38 +36,38 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AckBody<T> implements MessageBody {
+public class AckBody<T extends AckData> implements MessageBody {
 	Result result;
 	String errorCode;
 	String message;
 	T data;
 
-	public static <T> AckBody<T> success(T data, String message) {
-		return (AckBody<T>)AckBody.builder()
+	public static <T extends AckData> AckBody<T> success(T data, String message) {
+		return AckBody.<T>builder()
 			.result(Result.SUCCESS)
 			.data(data)
 			.message(message)
 			.build();
 	}
 
-	public static <T> AckBody<T> success(T data) {
+	public static <T extends AckData> AckBody<T> success(T data) {
 		return success(data, null);
 	}
 
-	public static <T> AckBody<T> success() {
+	public static <T extends AckData> AckBody<T> success() {
 		return success(null, null);
 	}
 
-	public static AckBody fail(String message, String errorCode) {
-		return AckBody.builder()
+	public static AckBody<EmptyAckData> fail(String message, String errorCode) {
+		return AckBody.<EmptyAckData>builder()
 			.result(Result.FAIL)
 			.message(message)
 			.errorCode(errorCode)
 			.build();
 	}
 
-	public static AckBody fail(String errorCode) {
-		return AckBody.builder()
+	public static AckBody<EmptyAckData> fail(String errorCode) {
+		return AckBody.<EmptyAckData>builder()
 			.result(Result.FAIL)
 			// .message(errorCode.getErrorMsg())
 			// .errorCode(errorCode.name())
