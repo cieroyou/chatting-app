@@ -15,10 +15,11 @@ import lombok.RequiredArgsConstructor;
 public class CreateRoomCommandHandler implements CommandHandler<CreateRoomRequest, CreateRoomResponse> {
 
 	private final ChattingRoomFacade chattingRoomFacade;
+	private static final String COMMAND = "create_room";
 
 	@Override
 	public boolean supports(String command) {
-		return "create_room".equals(command);
+		return COMMAND.equals(command);
 	}
 
 	@Override

@@ -14,10 +14,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class JoinRoomCommandHandler implements CommandHandler<JoinRoomRequest, AckData> {
 	private final ChattingRoomFacade chattingRoomFacade;
+	private static final String COMMAND = "join_room";
 
 	@Override
 	public boolean supports(String command) {
-		return "join_room".equals(command);
+		return COMMAND.equals(command);
 	}
 
 	@Override
