@@ -1,11 +1,13 @@
-package com.sera.chatting.websocket.config;
+package com.sera.chatting.config;
 
-import com.sera.chatting.websocket.WebSocketHandler;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+import com.sera.chatting.presentation.websocket.WebSocketHandler;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * WebSocket을 활성화하기 위한 Config
@@ -17,11 +19,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
-    private final WebSocketHandler webSocketHandler;
+	private final WebSocketHandler webSocketHandler;
 
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/ws").setAllowedOrigins("*");
-    }
+	@Override
+	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+		registry.addHandler(webSocketHandler, "/ws").setAllowedOrigins("*");
+	}
 
 }

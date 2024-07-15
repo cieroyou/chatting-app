@@ -1,7 +1,4 @@
-package com.sera.chatting.websocket.common;
-
-import com.sera.chatting.common.exception.BaseException;
-import com.sera.chatting.common.exception.ErrorCode;
+package com.sera.chatting.common.exception;
 
 public class SocketMessageParsingException extends BaseException {
     public SocketMessageParsingException() {
