@@ -15,20 +15,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class CreateRoomRequest extends RequestBody implements Serializable {
 	String roomName;
-
+	Integer maxParticipants;
+	String description;
 	@Serial
 	private static final long serialVersionUID = 2L; // 직렬화 버전 ID
 
 	@Builder(builderMethodName = "createRoomRequestBuilder")
-	public CreateRoomRequest(String command, String roomName) {
+	public CreateRoomRequest(String command, String roomName, Integer maxParticipants, String description) {
 		super(command);
 		this.roomName = roomName;
+		this.maxParticipants = maxParticipants;
+		this.description = description;
 	}
 
 	@Override
 	public String toString() {
 		return "CreateRoomRequest{" +
-			"name='" + roomName + '\'' +
+			"roomName='" + roomName + '\'' +
+			", maxParticipants=" + maxParticipants +
+			", description='" + description + '\'' +
 			"} " + super.toString();
 	}
 }

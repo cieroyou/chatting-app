@@ -24,7 +24,8 @@ public class CreateRoomCommandHandler implements CommandHandler<CreateRoomReques
 
 	@Override
 	public AckBody<CreateRoomResponse> handleCommand(String sessionId, CreateRoomRequest request) {
-		var response = chattingRoomFacade.createRoom(request.getRoomName());
+		var response = chattingRoomFacade.createRoom(request.getRoomName(), request.getMaxParticipants(),
+			request.getDescription());
 		return AckBody.success(response);
 	}
 }

@@ -16,8 +16,8 @@ public class ChattingRoomFacade {
 	/**
 	 * 방 생성 후 방 id를 반환
 	 */
-	public CreateRoomResponse createRoom(String roomName) {
-		var room = ChattingRoom.createRoom(roomName, "");
+	public CreateRoomResponse createRoom(String roomName, Integer maxParticipants, String description) {
+		var room = ChattingRoom.createRoom(roomName, maxParticipants, description);
 		roomStore.save(room);
 		return new CreateRoomResponse(room.getChattingRoomId());
 	}
