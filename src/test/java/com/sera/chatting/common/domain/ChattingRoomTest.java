@@ -13,18 +13,19 @@ class ChattingRoomTest {
 
 	@Test
 	@DisplayName("채팅방 생성 테스트")
-	public void createChattingRoomTest() {
+	void createChattingRoomTest() {
 		// given-when
 		ChattingRoom chattingRoom = ChattingRoomFixture.NORMAL.getChattingRoom();
 		// then
 		assertEquals(chattingRoom.getName(), ChattingRoomFixture.NORMAL.getName());
+		assertEquals(chattingRoom.getMaxParticipants(), ChattingRoomFixture.NORMAL.getMaxParticipants());
 		assertEquals(chattingRoom.getDescription(), ChattingRoomFixture.NORMAL.getDescription());
 		assertTrue(StringUtils.hasText(chattingRoom.getChattingRoomId()));
 	}
 
 	@DisplayName("채팅방 생성 테스트 - 채팅방 이름 필수값")
 	@Test
-	public void shouldChattingRoomHasName() {
+	void shouldChattingRoomHasName() {
 		assertThrows(IllegalArgumentException.class, () -> {
 			ChattingRoom.builder()
 				.description("채팅방입니다")
@@ -34,7 +35,7 @@ class ChattingRoomTest {
 
 	@DisplayName("채팅방 생성 테스트 - 채팅방 이름 Not Blank")
 	@Test
-	public void createRoomTest() {
+	void createRoomTest() {
 		// given
 		String name = " ";
 		String description = "채팅방입니다";
@@ -42,6 +43,17 @@ class ChattingRoomTest {
 		// when-then
 		assertThrows(IllegalArgumentException.class, () -> {
 			ChattingRoom.createRoom(name, maxParticipants, description);
+		});
+	}
+
+	@DisplayName("채팅방 생성 테스트 - 채팅방 인원수 필수값")
+	@Test
+	void shouldChattingRoomHasMaxParticipants() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			ChattingRoom.builder()
+				.name("채팅방")
+				.description("채팅방입니다")
+				.build();
 		});
 	}
 }

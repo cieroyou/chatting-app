@@ -39,6 +39,9 @@ public class ChattingRoom {
 		if (!StringUtils.hasText(name)) {
 			throw new IllegalArgumentException("name is blank");
 		}
+		if (maxParticipants == null) {
+			throw new IllegalArgumentException("maxParticipants is null");
+		}
 		this.chattingRoomId = UUID.randomUUID().toString();
 		this.name = name;
 		this.maxParticipants = maxParticipants;
