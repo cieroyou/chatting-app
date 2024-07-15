@@ -4,7 +4,6 @@
 {
   "type": "request",
   "transaction_id": "123444425",
-  "session_id": "absdf",
   "body": {
     "command": "create_room",
     "room_name": "채팅방"
@@ -16,13 +15,17 @@
 
 ```json
 {
-  "type": "ack",
-  "transaction_id": "12332342",
+  "transaction_id": "123444425",
+  "type": "ack ",
   "body": {
-    "result": "success",
-    "data": {}
+    "result": "SUCCESS",
+    "error_code": null,
+    "message": null,
+    "data": {
+      "room_id": "ea87e697-6829-4630-aecb-93e37f1745ab"
+    }
   },
-  "timestamp": "2024-01-012T12:30:00"
+  "timestamp": "2024-07-15T07:14:22.806824Z"
 }
 ```
 
