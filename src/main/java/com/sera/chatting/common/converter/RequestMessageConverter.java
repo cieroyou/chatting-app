@@ -53,8 +53,7 @@ public class RequestMessageConverter {
 			log.error("Invalid message type: {}", type);
 			throw new IllegalArgumentException("Invalid message type");
 		}
-
-		if (rootNode.isMissingNode()) {
+		if (!rootNode.has(TRANSACTION_ID)) {
 			log.error("Missing transaction_id in message");
 			throw new IllegalArgumentException("Missing transaction_id in message");
 		}
