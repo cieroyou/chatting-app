@@ -1,11 +1,12 @@
-package com.sera.chatting.application.dto;
+package com.sera.chatting.presentation.websocket.dto;
 
 import static lombok.AccessLevel.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-import com.sera.chatting.application.dto.common.RequestBody;
+import com.sera.chatting.application.dto.RoomCommand;
+import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -35,5 +36,9 @@ public class CreateRoomRequest extends RequestBody implements Serializable {
 			", maxParticipants=" + maxParticipants +
 			", description='" + description + '\'' +
 			"} " + super.toString();
+	}
+
+	public RoomCommand.CreateRoom toCommand() {
+		return new RoomCommand.CreateRoom(roomName, description, maxParticipants);
 	}
 }

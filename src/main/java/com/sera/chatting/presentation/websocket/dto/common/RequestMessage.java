@@ -1,4 +1,4 @@
-package com.sera.chatting.application.dto.common;
+package com.sera.chatting.presentation.websocket.dto.common;
 
 import java.time.Instant;
 

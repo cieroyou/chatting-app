@@ -8,10 +8,10 @@ import org.springframework.web.socket.WebSocketSession;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sera.chatting.application.dto.CreateRoomRequest;
-import com.sera.chatting.application.dto.JoinRoomRequest;
-import com.sera.chatting.application.dto.common.RequestBody;
-import com.sera.chatting.application.dto.common.RequestMessage;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.JoinRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
+import com.sera.chatting.presentation.websocket.dto.common.RequestMessage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

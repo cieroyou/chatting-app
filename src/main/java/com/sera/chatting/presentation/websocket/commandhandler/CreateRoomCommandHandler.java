@@ -1,11 +1,11 @@
-package com.sera.chatting.presentation.websocket.commands;
+package com.sera.chatting.presentation.websocket.commandhandler;
 
 import org.springframework.stereotype.Component;
 
 import com.sera.chatting.application.ChattingRoomFacade;
-import com.sera.chatting.application.CreateRoomResponse;
-import com.sera.chatting.application.dto.CreateRoomRequest;
-import com.sera.chatting.application.dto.common.AckBody;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomResponse;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.common.AckBody;
 import com.sera.chatting.common.CommandHandler;
 
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,7 @@ public class CreateRoomCommandHandler implements CommandHandler<CreateRoomReques
 
 	@Override
 	public AckBody<CreateRoomResponse> handleCommand(String sessionId, CreateRoomRequest request) {
-		var response = chattingRoomFacade.createRoom(request.getRoomName(), request.getMaxParticipants(),
-			request.getDescription());
+		var response = chattingRoomFacade.createRoom(request.toCommand());
 		return AckBody.success(response);
 	}
 }

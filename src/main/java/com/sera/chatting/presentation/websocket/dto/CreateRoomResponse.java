@@ -1,8 +1,8 @@
-package com.sera.chatting.application;
+package com.sera.chatting.presentation.websocket.dto;
 
 import static lombok.AccessLevel.*;
 
-import com.sera.chatting.application.dto.common.AckData;
+import com.sera.chatting.presentation.websocket.dto.common.AckData;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

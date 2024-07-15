@@ -1,4 +1,4 @@
-package com.sera.chatting.presentation.websocket.commands;
+package com.sera.chatting.presentation.websocket.commandhandler;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -11,9 +11,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.sera.chatting.application.ChattingRoomFacade;
-import com.sera.chatting.application.CreateRoomResponse;
-import com.sera.chatting.application.dto.CreateRoomRequest;
-import com.sera.chatting.application.dto.common.AckBody;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomResponse;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.common.AckBody;
 
 @ExtendWith(MockitoExtension.class)
 class CreateRoomCommandHandlerTest {
@@ -56,14 +56,13 @@ class CreateRoomCommandHandlerTest {
 		CreateRoomResponse expectedResponse = new CreateRoomResponse(expectedRoomId);
 
 		// Mock behavior
-		when(chattingRoomFacade.createRoom(anyString(), anyInt(), anyString())).thenReturn(expectedResponse);
-
+		when(chattingRoomFacade.createRoom(any())).thenReturn(expectedResponse);
 		// when
 		AckBody<CreateRoomResponse> result = createRoomCommandHandler.handleCommand("sessionId", request);
 
 		// then
 		assertEquals(expectedResponse, result.getData(), "The response data should match the expected response");
 		assertEquals(expectedResult, result.getResult());
-		verify(chattingRoomFacade).createRoom(expectedRoomName, expectedMaxParticipants, expectedDescription);
+		verify(chattingRoomFacade).createRoom(request.toCommand());
 	}
 }

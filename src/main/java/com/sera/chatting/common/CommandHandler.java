@@ -1,8 +1,8 @@
 package com.sera.chatting.common;
 
-import com.sera.chatting.application.dto.common.AckBody;
-import com.sera.chatting.application.dto.common.AckData;
-import com.sera.chatting.application.dto.common.RequestBody;
+import com.sera.chatting.presentation.websocket.dto.common.AckBody;
+import com.sera.chatting.presentation.websocket.dto.common.AckData;
+import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
 
 public interface CommandHandler<T extends RequestBody, R extends AckData> {
 

@@ -1,12 +1,12 @@
-package com.sera.chatting.application.dto.common;
+package com.sera.chatting.presentation.websocket.dto.common;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.sera.chatting.application.dto.CreateRoomRequest;
-import com.sera.chatting.application.dto.JoinRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.JoinRoomRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

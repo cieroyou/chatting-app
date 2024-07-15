@@ -17,9 +17,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.sera.chatting.application.dto.CreateRoomRequest;
-import com.sera.chatting.application.dto.common.RequestBody;
-import com.sera.chatting.application.dto.common.RequestMessage;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
+import com.sera.chatting.presentation.websocket.dto.common.RequestMessage;
 
 @ExtendWith(MockitoExtension.class)
 class RequestMessageConverterTest {

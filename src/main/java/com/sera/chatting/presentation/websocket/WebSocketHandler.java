@@ -10,11 +10,11 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sera.chatting.application.ChattingRoomFacade;
-import com.sera.chatting.application.dto.common.AckBody;
-import com.sera.chatting.application.dto.common.AckData;
-import com.sera.chatting.application.dto.common.AckMessage;
-import com.sera.chatting.application.dto.common.RequestBody;
-import com.sera.chatting.application.dto.common.RequestMessage;
+import com.sera.chatting.presentation.websocket.dto.common.AckBody;
+import com.sera.chatting.presentation.websocket.dto.common.AckData;
+import com.sera.chatting.presentation.websocket.dto.common.AckMessage;
+import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
+import com.sera.chatting.presentation.websocket.dto.common.RequestMessage;
 import com.sera.chatting.common.CommandHandler;
 import com.sera.chatting.common.converter.AckMessageJsonConverter;
 import com.sera.chatting.common.converter.RequestMessageConverter;

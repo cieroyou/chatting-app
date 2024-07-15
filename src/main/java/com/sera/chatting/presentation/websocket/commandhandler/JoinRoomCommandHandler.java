@@ -1,11 +1,11 @@
-package com.sera.chatting.presentation.websocket.commands;
+package com.sera.chatting.presentation.websocket.commandhandler;
 
 import org.springframework.stereotype.Component;
 
 import com.sera.chatting.application.ChattingRoomFacade;
-import com.sera.chatting.application.dto.JoinRoomRequest;
-import com.sera.chatting.application.dto.common.AckBody;
-import com.sera.chatting.application.dto.common.AckData;
+import com.sera.chatting.presentation.websocket.dto.JoinRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.common.AckBody;
+import com.sera.chatting.presentation.websocket.dto.common.AckData;
 import com.sera.chatting.common.CommandHandler;
 
 import lombok.RequiredArgsConstructor;

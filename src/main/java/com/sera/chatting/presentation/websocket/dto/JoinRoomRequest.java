@@ -1,9 +1,9 @@
-package com.sera.chatting.application.dto;
+package com.sera.chatting.presentation.websocket.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-import com.sera.chatting.application.dto.common.RequestBody;
+import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

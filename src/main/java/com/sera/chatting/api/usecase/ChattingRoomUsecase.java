@@ -2,7 +2,7 @@ package com.sera.chatting.api.usecase;
 
 import org.springframework.stereotype.Service;
 
-import com.sera.chatting.api.usecase.dto.RoomCommand;
+import com.sera.chatting.application.dto.RoomCommand;
 import com.sera.chatting.domain.ChattingRoom;
 import com.sera.chatting.infrastructure.dataaccess.ChattingRoomRepository;
 

@@ -3,7 +3,7 @@ package com.sera.chatting.common.converter;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sera.chatting.application.dto.common.AckMessage;
+import com.sera.chatting.presentation.websocket.dto.common.AckMessage;
 
 import lombok.RequiredArgsConstructor;
 
