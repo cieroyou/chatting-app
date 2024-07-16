@@ -8,6 +8,7 @@ import org.springframework.web.socket.WebSocketSession;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sera.chatting.common.exception.SocketMessageParsingException;
 import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
 import com.sera.chatting.presentation.websocket.dto.JoinRoomRequest;
 import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
@@ -33,42 +34,51 @@ public class RequestMessageConverter {
 	private static final String REQUEST = "request";
 
 	public RequestMessage convertToRequestMessage(WebSocketSession session, String jsonMessage) throws
-		JsonProcessingException {
-		JsonNode rootNode = objectMapper.readTree(jsonMessage);
-		String transactionId = rootNode.path(TRANSACTION_ID).asText();
-		Instant timestamp = Instant.now();
-		JsonNode bodyNode = rootNode.path(BODY);
+		SocketMessageParsingException {
+		JsonNode rootNode;
+		String transactionId;
+		RequestBody body;
+		try {
+			rootNode = objectMapper.readTree(jsonMessage);
+			transactionId = rootNode.path(TRANSACTION_ID).asText();
+			JsonNode bodyNode = rootNode.path(BODY);
 
-		validateMessage(rootNode);
+			validateMessage(rootNode);
 
-		String command = bodyNode.path(COMMAND).asText();
-		RequestBody body = getRequestBody(bodyNode, command);
-		return new RequestMessage(transactionId, body, timestamp);
+			String command = bodyNode.path(COMMAND).asText();
+			body = getRequestBody(bodyNode, command);
+		} catch (JsonProcessingException e) {
+			throw new SocketMessageParsingException("Failed to parse Json String message, message: {}", jsonMessage);
+		}
+
+		return new RequestMessage(transactionId, body, Instant.now());
 	}
 
 	private void validateMessage(JsonNode rootNode) {
 		String type = rootNode.path(TYPE).asText();
 		JsonNode bodyNode = rootNode.path(BODY);
+
 		if (!REQUEST.equals(type)) {
-			log.error("Invalid message type: {}", type);
-			throw new IllegalArgumentException("Invalid message type");
+			throw new SocketMessageParsingException("Invalid message type: {}", type);
 		}
 		if (!rootNode.has(TRANSACTION_ID)) {
-			log.error("Missing transaction_id in message");
-			throw new IllegalArgumentException("Missing transaction_id in message");
+			throw new SocketMessageParsingException("Missing transaction_id in message");
 		}
 		if (!bodyNode.has(COMMAND)) {
-			log.error("Missing command in body");
-			throw new IllegalArgumentException("Missing command in body");
+			throw new SocketMessageParsingException("Missing command in body");
 		}
 	}
 
-	private RequestBody getRequestBody(JsonNode bodyNode, String command) throws JsonProcessingException {
+	private RequestBody getRequestBody(JsonNode bodyNode, String command)  {
 		RequestBody body = null;
-		switch (command) {
-			case "create_room" -> body = objectMapper.treeToValue(bodyNode, CreateRoomRequest.class);
-			case "join_room" -> body = objectMapper.treeToValue(bodyNode, JoinRoomRequest.class);
-			default -> throw new IllegalArgumentException("Unsupported command: " + command);
+		try{
+			switch (command) {
+				case "create_room" -> body = objectMapper.treeToValue(bodyNode, CreateRoomRequest.class);
+				case "join_room" -> body = objectMapper.treeToValue(bodyNode, JoinRoomRequest.class);
+				default -> throw new IllegalArgumentException("Unsupported command: " + command);
+			}
+		}catch(Exception e){
+			throw new SocketMessageParsingException("Failed to parse body to RequestBody");
 		}
 		assert body != null;
 		body.setCommand(command);

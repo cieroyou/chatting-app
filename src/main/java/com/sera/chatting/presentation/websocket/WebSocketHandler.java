@@ -18,8 +18,7 @@ import com.sera.chatting.presentation.websocket.dto.common.RequestMessage;
 import com.sera.chatting.common.CommandHandler;
 import com.sera.chatting.common.converter.AckMessageJsonConverter;
 import com.sera.chatting.common.converter.RequestMessageConverter;
-import com.sera.chatting.common.message.CommonEventMessage;
-
+  
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,8 +39,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		log.info("afterConnectionEstablished: {}", session);
-		CommonEventMessage commonEventMessage = CommonEventMessage.toConnectionEstablishedMessage(session.getId());
-		session.sendMessage(new TextMessage(objectMapper.writeValueAsString(commonEventMessage)));
+		// CommonEventMessage commonEventMessage = CommonEventMessage.toConnectionEstablishedMessage(session.getId());
+		// session.sendMessage(new TextMessage(objectMapper.writeValueAsString(commonEventMessage)));
 	}
 
 	@Override

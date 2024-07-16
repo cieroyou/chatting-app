@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.sera.chatting.common.exception.SocketMessageParsingException;
 import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
 import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
 import com.sera.chatting.presentation.websocket.dto.common.RequestMessage;
@@ -27,7 +28,7 @@ class RequestMessageConverterTest {
 	private RequestMessageConverter converter;
 	@Mock
 	private WebSocketSession session;
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final String TRANSACTION_ID = "12345";
 	private static final String CREATE_ROOM_COMMAND = "create_room";
@@ -62,7 +63,7 @@ class RequestMessageConverterTest {
 		RequestBody body = result.getBody();
 		// then
 		assertNotNull(result);
-		assertTrue(body instanceof CreateRoomRequest);
+		assertInstanceOf(CreateRoomRequest.class, body);
 		CreateRoomRequest createRoomRequest = (CreateRoomRequest)body;
 		assertEquals(TRANSACTION_ID, result.getTransactionId());
 		assertEquals(CREATE_ROOM_COMMAND, body.getCommand());
@@ -73,29 +74,29 @@ class RequestMessageConverterTest {
 
 	@Test
 	@DisplayName("Exception is thrown for invalid message type")
-	void convertToRequestMessage_InvalidMessageType() {
-		assertThrows(IllegalArgumentException.class,
+	void convertToRequestMessage_InvalidMessageType_throwsSocketMessageParsingException() {
+		assertThrows(SocketMessageParsingException.class,
 			() -> converter.convertToRequestMessage(session, INVALID_MESSAGE));
 	}
 
 	@Test
 	@DisplayName("Exception is thrown when transaction_id is missing")
-	void convertToRequestMessage_MissingTransactionId() {
+	void convertToRequestMessage_MissingTransactionId_throwsSocketMessageParsingException() {
 		String jsonMessage = "{\"type\":\"request\", \"body\":{\"command\":\"create_room\"}}";
-		assertThrows(IllegalArgumentException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
+		assertThrows(SocketMessageParsingException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
 	}
 
 	@Test
 	@DisplayName("Exception is thrown when command is missing in body")
-	void convertToRequestMessage_MissingCommand() {
+	void convertToRequestMessage_MissingCommand_throwsSocketMessageParsingException() {
 		String jsonMessage = "{\"transaction_id\":\"12345\", \"type\":\"request\", \"body\":{}}";
-		assertThrows(IllegalArgumentException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
+		assertThrows(SocketMessageParsingException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
 	}
 
 	@Test
 	@DisplayName("Exception is thrown for unsupported command")
-	void convertToRequestMessage_UnsupportedCommand() {
+	void convertToRequestMessage_UnsupportedCommand_throwsSocketMessageParsingException() {
 		String jsonMessage = "{\"transaction_id\":\"12345\", \"type\":\"request\", \"body\":{\"command\":\"unsupported_command\"}}";
-		assertThrows(IllegalArgumentException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
+		assertThrows(SocketMessageParsingException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
 	}
 }
