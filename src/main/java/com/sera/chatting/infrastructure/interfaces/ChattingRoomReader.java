@@ -1,4 +1,7 @@
 package com.sera.chatting.infrastructure.interfaces;
 
-public class ChattingRoomReader {
+import com.sera.chatting.domain.ChattingRoom;
+
+public interface ChattingRoomReader {
+	ChattingRoom readByChattingRoomId(String roomId);
 }
