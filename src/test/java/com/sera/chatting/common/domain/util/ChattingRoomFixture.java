@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum ChattingRoomFixture {
-	NORMAL("채팅방", 10, "채팅방입니다");
+	NORMAL("채팅방", 3, "채팅방입니다");
 
 	private final String name;
 	private final Integer maxParticipants;
