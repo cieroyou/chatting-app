@@ -28,6 +28,7 @@ public class RequestMessageConverter {
 	private final ObjectMapper objectMapper;
 
 	private static final String TRANSACTION_ID = "transaction_id";
+	private static final String SESSION_ID = "session_id";
 	private static final String COMMAND = "command";
 	private static final String TYPE = "type";
 	private static final String BODY = "body";
@@ -43,7 +44,7 @@ public class RequestMessageConverter {
 			transactionId = rootNode.path(TRANSACTION_ID).asText();
 			JsonNode bodyNode = rootNode.path(BODY);
 
-			validateMessage(rootNode);
+			validateMessage(rootNode, session.getId());
 
 			String command = bodyNode.path(COMMAND).asText();
 			body = getRequestBody(bodyNode, command);
@@ -51,15 +52,18 @@ public class RequestMessageConverter {
 			throw new SocketMessageParsingException("Failed to parse Json String message, message: {}", jsonMessage);
 		}
 
-		return new RequestMessage(transactionId, body, Instant.now());
+		return new RequestMessage(transactionId, session.getId(), body, Instant.now());
 	}
 
-	private void validateMessage(JsonNode rootNode) {
+	private void validateMessage(JsonNode rootNode, String socketSessionId) {
 		String type = rootNode.path(TYPE).asText();
 		JsonNode bodyNode = rootNode.path(BODY);
-
+		String sessionId = rootNode.path(SESSION_ID).asText();
 		if (!REQUEST.equals(type)) {
 			throw new SocketMessageParsingException("Invalid message type: {}", type);
+		}
+		if(!socketSessionId.equals(sessionId)) {
+			throw new SocketMessageParsingException("Invalid session id: {}", sessionId);
 		}
 		if (!rootNode.has(TRANSACTION_ID)) {
 			throw new SocketMessageParsingException("Missing transaction_id in message");

@@ -1,3 +1,16 @@
+# 세션 연결 이벤트
+
+```json
+{
+  "transaction_id": "b0dd7202-6a9a-4871-8d04-d775109e2d00",
+  "type": "event",
+  "body": {
+    "event": "connected"
+  },
+  "timestamp": "2024-07-18T02:08:45.584707Z"
+}
+```
+
 # 방 생성 요청
 
 ```json

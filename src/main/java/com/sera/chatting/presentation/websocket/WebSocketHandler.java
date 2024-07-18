@@ -1,6 +1,7 @@
 package com.sera.chatting.presentation.websocket;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -10,15 +11,19 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sera.chatting.application.ChattingRoomFacade;
+import com.sera.chatting.application.websocket.SessionManager;
+import com.sera.chatting.common.CommandHandler;
+import com.sera.chatting.common.converter.AckMessageJsonConverter;
+import com.sera.chatting.common.converter.EventMessageJsonConverter;
+import com.sera.chatting.common.converter.RequestMessageConverter;
 import com.sera.chatting.presentation.websocket.dto.common.AckBody;
 import com.sera.chatting.presentation.websocket.dto.common.AckData;
 import com.sera.chatting.presentation.websocket.dto.common.AckMessage;
+import com.sera.chatting.presentation.websocket.dto.common.EventMessage;
 import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
 import com.sera.chatting.presentation.websocket.dto.common.RequestMessage;
-import com.sera.chatting.common.CommandHandler;
-import com.sera.chatting.common.converter.AckMessageJsonConverter;
-import com.sera.chatting.common.converter.RequestMessageConverter;
-  
+import com.sera.chatting.presentation.websocket.dto.event.ConnectedEvent;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,14 +38,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	private final ObjectMapper objectMapper;
 	private final RequestMessageConverter webSocketMessageConverter;
 	private final AckMessageJsonConverter ackMessageJsonConverter;
+	private final EventMessageJsonConverter eventMessageJsonConverter;
 	private final ChattingRoomFacade roomFacade;
 	private final List<CommandHandler> commandHandlers;
+	private final SessionManager sessionManager;
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		log.info("afterConnectionEstablished: {}", session);
-		// CommonEventMessage commonEventMessage = CommonEventMessage.toConnectionEstablishedMessage(session.getId());
-		// session.sendMessage(new TextMessage(objectMapper.writeValueAsString(commonEventMessage)));
+		sessionManager.addSession(session.getId(), session);
+		String transactionId = UUID.randomUUID().toString();
+		EventMessage eventMessage = new EventMessage(transactionId, new ConnectedEvent(session.getId()));
+		String ackMessageJson = eventMessageJsonConverter.convertToJson(eventMessage);
+		session.sendMessage(new TextMessage(ackMessageJson));
 	}
 
 	@Override
