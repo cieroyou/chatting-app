@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -18,6 +20,17 @@ import lombok.RequiredArgsConstructor;
 public class RoomSessionManager implements SessionEventListener {
 	private final Map<String, Set<String>> roomSessions = new ConcurrentHashMap<>();
 	private final SessionManager sessionManager;
+	private final SessionEventPublisher sessionEventPublisher;
+
+	@PostConstruct
+	public void init() {
+		sessionEventPublisher.addListener(this);
+	}
+
+	@PreDestroy
+	public void destroy() {
+		sessionEventPublisher.removeListener(this);
+	}
 
 	public void addSessionToRoom(String roomId, String sessionId) {
 		roomSessions.computeIfAbsent(roomId, key -> ConcurrentHashMap.newKeySet()).add(sessionId);

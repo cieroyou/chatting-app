@@ -17,7 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SessionManager {
 	private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-	private final SessionEventListener sessionEventListener;
+	private final SessionEventPublisher sessionEventPublisher;
+
+	// 기존 코드 유지
 
 	public void addSession(String sessionId, WebSocketSession session) {
 		if (!StringUtils.hasText(sessionId)) {
@@ -72,7 +74,7 @@ public class SessionManager {
 	}
 
 	private void notifySessionClosed(String sessionId) {
-		sessionEventListener.onSessionClosed(sessionId);
+		sessionEventPublisher.publishSessionClosed(sessionId);
 		log.info("Session closed event notified for session: {}", sessionId);
 	}
 }
