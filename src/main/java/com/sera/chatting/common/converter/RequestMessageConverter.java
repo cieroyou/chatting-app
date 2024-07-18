@@ -69,15 +69,15 @@ public class RequestMessageConverter {
 		}
 	}
 
-	private RequestBody getRequestBody(JsonNode bodyNode, String command)  {
-		RequestBody body = null;
-		try{
+	private RequestBody getRequestBody(JsonNode bodyNode, String command) {
+		RequestBody body;
+		try {
 			switch (command) {
 				case "create_room" -> body = objectMapper.treeToValue(bodyNode, CreateRoomRequest.class);
 				case "join_room" -> body = objectMapper.treeToValue(bodyNode, JoinRoomRequest.class);
 				default -> throw new IllegalArgumentException("Unsupported command: " + command);
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw new SocketMessageParsingException("Failed to parse body to RequestBody");
 		}
 		assert body != null;
