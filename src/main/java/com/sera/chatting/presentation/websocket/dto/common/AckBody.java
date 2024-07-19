@@ -1,5 +1,7 @@
 package com.sera.chatting.presentation.websocket.dto.common;
 
+import com.sera.chatting.common.exception.ErrorCode;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,19 +60,19 @@ public class AckBody<T extends AckData> implements MessageBody {
 		return success(null, null);
 	}
 
-	public static AckBody<EmptyAckData> fail(String message, String errorCode) {
+	public static AckBody<EmptyAckData> fail(String message, ErrorCode errorCode) {
 		return AckBody.<EmptyAckData>builder()
 			.result(Result.FAIL)
 			.message(message)
-			.errorCode(errorCode)
+			.errorCode(errorCode.name())
 			.build();
 	}
 
-	public static AckBody<EmptyAckData> fail(String errorCode) {
+	public static AckBody<EmptyAckData> fail(ErrorCode errorCode) {
 		return AckBody.<EmptyAckData>builder()
 			.result(Result.FAIL)
-			// .message(errorCode.getErrorMsg())
-			// .errorCode(errorCode.name())
+			.message(errorCode.getErrorMsg())
+			.errorCode(errorCode.name())
 			.build();
 	}
 

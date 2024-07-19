@@ -51,7 +51,8 @@ public class RequestMessageConverter {
 			String command = bodyNode.path(COMMAND).asText();
 			body = getRequestBody(bodyNode, command);
 		} catch (JsonProcessingException e) {
-			throw new SocketMessageParsingException("Failed to parse Json String message, message: {}", jsonMessage);
+			throw new SocketMessageParsingException(
+				"Failed to parse Json String message, message: %s".formatted(jsonMessage));
 		}
 
 		return new RequestMessage(transactionId, session.getId(), body, Instant.now());
@@ -68,17 +69,17 @@ public class RequestMessageConverter {
 		try {
 			type = MessageType.fromValue(strType);
 		} catch (IllegalArgumentException e) {
-			throw new SocketMessageParsingException("Invalid message type: {}", strType);
+			throw new SocketMessageParsingException("Invalid message type: %".formatted(strType));
 		}
 
 		if (!REQUEST.equals(type)) {
-			throw new SocketMessageParsingException("Invalid message type: {}", strType);
+			throw new SocketMessageParsingException("Invalid message type: %".formatted(strType));
 		}
 		if (!rootNode.has(SESSION_ID)) {
 			throw new SocketMessageParsingException("Missing session_id in message");
 		}
 		if (!socketSessionId.equals(sessionId)) {
-			throw new SocketMessageParsingException("Invalid session id: {}", sessionId);
+			throw new SocketMessageParsingException("Invalid session id: %s".formatted(sessionId));
 		}
 		if (!rootNode.has(TRANSACTION_ID)) {
 			throw new SocketMessageParsingException("Missing transaction_id in message");

@@ -16,6 +16,7 @@ import com.sera.chatting.common.CommandHandler;
 import com.sera.chatting.common.converter.AckMessageJsonConverter;
 import com.sera.chatting.common.converter.EventMessageJsonConverter;
 import com.sera.chatting.common.converter.RequestMessageConverter;
+import com.sera.chatting.common.exception.BaseException;
 import com.sera.chatting.presentation.websocket.dto.common.AckBody;
 import com.sera.chatting.presentation.websocket.dto.common.AckData;
 import com.sera.chatting.presentation.websocket.dto.common.AckMessage;
@@ -60,26 +61,36 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
-		String payload = textMessage.getPayload();
-		log.info("handleTextMessage: {}", payload);
-		// 1. 클라이언트로부터 받은 메세지를 RequestMessage 로 변환
-		RequestMessage requestMessage = webSocketMessageConverter.convertToRequestMessage(session, payload);
+		String transactionId = "";
+		try {
+			String payload = textMessage.getPayload();
+			AckBody<AckData> body = null;
 
-		// 2. 요청에 따른 비즈니스로직 함수 수행하여 리턴값 가져오기
-		AckBody<AckData> body = null;
-		RequestBody request = requestMessage.getBody();
-		String command = request.getCommand();
-		for (@SuppressWarnings("rawtypes") CommandHandler commandHandler : commandHandlers) {
-			if (commandHandler.supports(command)) {
-				//noinspection unchecked
-				body = commandHandler.handleCommand(session.getId(), request);
+			log.info("handleTextMessage: {}", payload);
+			// 1. 클라이언트로부터 받은 메세지를 RequestMessage 로 변환
+			RequestMessage requestMessage = webSocketMessageConverter.convertToRequestMessage(session, payload);
+			transactionId = requestMessage.getTransactionId();
+			// 2. 요청에 따른 비즈니스로직 함수 수행하여 리턴값 가져오기
+			RequestBody request = requestMessage.getBody();
+			String command = request.getCommand();
+			for (@SuppressWarnings("rawtypes") CommandHandler commandHandler : commandHandlers) {
+				if (commandHandler.supports(command)) {
+					//noinspection unchecked
+					body = commandHandler.handleCommand(session.getId(), request);
+				}
 			}
+
+			// // 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답
+			AckMessage ackMessage = new AckMessage(requestMessage.getTransactionId(), body);
+			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
+			session.sendMessage(new TextMessage(ackMessageJson));
+		} catch (BaseException exception) {
+			log.error("handleTextMessage: {}", exception.getMessage());
+			var body = AckBody.fail(exception.getMessage(), exception.getErrorCode());
+			AckMessage ackMessage = new AckMessage(transactionId, body);
+			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
+			session.sendMessage(new TextMessage(ackMessageJson));
 		}
 
-		// // 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답
-		AckMessage ackMessage = new AckMessage(requestMessage.getTransactionId(), body);
-		//
-		String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
-		session.sendMessage(new TextMessage(ackMessageJson));
 	}
 }
