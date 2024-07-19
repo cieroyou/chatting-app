@@ -69,11 +69,11 @@ public class RequestMessageConverter {
 		try {
 			type = MessageType.fromValue(strType);
 		} catch (IllegalArgumentException e) {
-			throw new SocketMessageParsingException("Invalid message type: %".formatted(strType));
+			throw new SocketMessageParsingException("Invalid message type: %s".formatted(strType));
 		}
 
 		if (!REQUEST.equals(type)) {
-			throw new SocketMessageParsingException("Invalid message type: %".formatted(strType));
+			throw new SocketMessageParsingException("Invalid message type: %s".formatted(strType));
 		}
 		if (!rootNode.has(SESSION_ID)) {
 			throw new SocketMessageParsingException("Missing session_id in message");

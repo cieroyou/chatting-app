@@ -3,6 +3,8 @@ package com.sera.chatting.presentation.websocket.commandhandler;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.sera.chatting.application.ChattingRoomFacade;
-import com.sera.chatting.presentation.websocket.dto.CreateRoomResponse;
 import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.CreateRoomResponse;
 import com.sera.chatting.presentation.websocket.dto.common.AckBody;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +46,7 @@ class CreateRoomCommandHandlerTest {
 	void handleCommand_ShouldReturnSuccessAckBody_WhenCalledWithValidRequest() {
 		// given
 		String expectedRoomName = "Test Room";
-		String expectedRoomId = "123";
+		UUID expectedRoomId = UUID.randomUUID();
 		int expectedMaxParticipants = 10;
 		String expectedDescription = "Test Description";
 		AckBody.Result expectedResult = AckBody.Result.SUCCESS;
