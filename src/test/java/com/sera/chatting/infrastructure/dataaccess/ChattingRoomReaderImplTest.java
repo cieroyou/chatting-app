@@ -2,12 +2,15 @@ package com.sera.chatting.infrastructure.dataaccess;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import com.sera.chatting.common.domain.util.ChattingRoomFixture;
+import com.sera.chatting.common.domain.valueobject.RoomId;
 import com.sera.chatting.domain.ChattingRoom;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -44,7 +47,7 @@ class ChattingRoomReaderImplTest {
 		String nonExistingId = "non-existing-id";
 		String expectedErrorMessage = "ChattingRoom not found, chattingRoomId: %s".formatted(nonExistingId);
 		EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class,
-			() -> reader.readByChattingRoomId("non-existing-id"));
+			() -> reader.readByChattingRoomId(new RoomId(UUID.fromString("non-existing-id"))));
 		assertEquals(expectedErrorMessage, thrown.getMessage());
 	}
 }

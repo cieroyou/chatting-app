@@ -2,9 +2,11 @@ package com.sera.chatting.domain;
 
 import static lombok.AccessLevel.*;
 
-import com.sera.chatting.common.domain.valueobject.RoomId;
+import java.util.UUID;
+
 import com.sera.chatting.common.domain.valueobject.UserId;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,18 +16,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Table(name = "member")
 @Entity
-@Table(name = "participants")
 @NoArgsConstructor(access = PRIVATE)
-public class Participant {
+public class Member {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private UserId userId;
-	private RoomId chattingRoomId;
 
-	public Participant(UserId userId, RoomId chattingRoomId) {
-		this.userId = userId;
-		this.chattingRoomId = chattingRoomId;
+	@Column(name = "user_id", nullable = false, unique = true)
+	private UserId userId;
+	private String username;
+
+	public Member(String username) {
+		this.userId = new UserId(UUID.randomUUID());
+		this.username = username;
 	}
 }

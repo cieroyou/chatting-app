@@ -3,6 +3,8 @@ package com.sera.chatting.application;
 import org.springframework.stereotype.Service;
 
 import com.sera.chatting.application.dto.RoomCommand;
+import com.sera.chatting.common.domain.valueobject.RoomId;
+import com.sera.chatting.common.domain.valueobject.UserId;
 import com.sera.chatting.domain.ChattingRoom;
 import com.sera.chatting.domain.ChattingRoomService;
 import com.sera.chatting.domain.Participant;
@@ -31,30 +33,18 @@ public class ChattingRoomFacade {
 	public CreateRoomResponse createRoom(RoomCommand.CreateRoom createRoom) {
 		var room = ChattingRoom.createRoom(createRoom.name(), createRoom.maxParticipants(), createRoom.description());
 		roomStore.save(room);
-		return new CreateRoomResponse(room.getChattingRoomId());
+		return new CreateRoomResponse(room.getChattingRoomId().getValue());
 	}
 
 	/**
 	 * 방 입장 요청
 	 */
 	@Transactional
-	public void addParticipant(String roomId, String userId) {
+	public void addParticipant(RoomId roomId, UserId userId) {
 		var room = roomReader.readByChattingRoomId(roomId);
 		var participants = participantReader.readByChattingRoomId(roomId);
 		roomService.addParticipant(room, participants, userId);
-		participantStore.save(new Participant(userId, room.getChattingRoomId()));
+		participantStore.save(new Participant(userId, roomId));
 	}
 
-	// @Transactional
-	// public void assignParticipantToRoom(Long roomId, Long participantId) {
-	// 	Room room = roomRepository.findById(roomId)
-	// 		.orElseThrow(() -> new IllegalArgumentException("Room not found"));
-	//
-	// 	Participant participant = participantRepository.findById(participantId)
-	// 		.orElseThrow(() -> new IllegalArgumentException("Participant not found"));
-	//
-	// 	roomService.assignParticipantToRoom(room, participant);
-	// 	participantRepository.save(participant); // 필요 시 업데이트
-	// 	roomRepository.save(room); // 필요 시 업데이트
-	// }
 }

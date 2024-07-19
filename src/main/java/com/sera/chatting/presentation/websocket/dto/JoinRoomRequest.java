@@ -2,6 +2,7 @@ package com.sera.chatting.presentation.websocket.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.UUID;
 
 import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
 
@@ -14,10 +15,10 @@ public class JoinRoomRequest extends RequestBody implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 3L; // 직렬화 버전 ID
-	String roomId;
-	String userId;
+	UUID roomId;
+	UUID userId;
 
-	public JoinRoomRequest(String roomId, String userId) {
+	public JoinRoomRequest(UUID roomId, UUID userId) {
 		this.roomId = roomId;
 		this.userId = userId;
 	}

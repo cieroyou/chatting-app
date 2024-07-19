@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.sera.chatting.common.domain.valueobject.UserId;
 import com.sera.chatting.common.exception.BaseException;
 import com.sera.chatting.common.exception.ErrorCode;
 
@@ -14,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ChattingRoomService {
-	public void addParticipant(ChattingRoom room, Set<String> participants, String userId) {
+	public void addParticipant(ChattingRoom room, Set<UserId> participants, UserId userId) {
 		// 참여자가 방에 이미 있는지 확인
 		if (participants.contains(userId)) {
 			throw new BaseException("이미 참여한 방입니다. userId: %s, roomId: %s".formatted(userId, room.getChattingRoomId())

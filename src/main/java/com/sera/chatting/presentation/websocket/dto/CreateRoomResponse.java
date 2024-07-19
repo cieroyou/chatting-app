@@ -1,6 +1,8 @@
 package com.sera.chatting.presentation.websocket.dto;
 
+import java.util.UUID;
+
 import com.sera.chatting.presentation.websocket.dto.common.AckData;
 
-public record CreateRoomResponse(String roomId) implements AckData {
+public record CreateRoomResponse(UUID roomId) implements AckData {
 }

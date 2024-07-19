@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.sera.chatting.common.domain.valueobject.RoomId;
+import com.sera.chatting.common.domain.valueobject.UserId;
 import com.sera.chatting.domain.Participant;
 import com.sera.chatting.infrastructure.interfaces.ParticipantReader;
 
@@ -16,7 +18,7 @@ public class ParticipantReaderImpl implements ParticipantReader {
 	private final ParticipantRepository participantRepository;
 
 	@Override
-	public Set<String> readByChattingRoomId(String roomId) {
+	public Set<UserId> readByChattingRoomId(RoomId roomId) {
 		return participantRepository.findAllByChattingRoomId(roomId)
 			.stream()
 			.map(Participant::getUserId)

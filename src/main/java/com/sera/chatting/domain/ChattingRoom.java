@@ -1,8 +1,12 @@
 package com.sera.chatting.domain;
 
+import static lombok.AccessLevel.*;
+
 import java.util.UUID;
 
 import org.springframework.util.StringUtils;
+
+import com.sera.chatting.common.domain.valueobject.RoomId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,13 +26,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "chatting_room")
-@NoArgsConstructor
+@NoArgsConstructor(access = PRIVATE)
 public class ChattingRoom {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(name = "chatting_room_id", nullable = false, unique = true)
-	String chattingRoomId;
+	RoomId chattingRoomId;
 	String name;
 	@Column(name = "max_participants", nullable = false, unique = true)
 	Integer maxParticipants;
@@ -42,7 +46,7 @@ public class ChattingRoom {
 		if (maxParticipants == null) {
 			throw new IllegalArgumentException("maxParticipants is null");
 		}
-		this.chattingRoomId = UUID.randomUUID().toString();
+		this.chattingRoomId = new RoomId(UUID.randomUUID());
 		this.name = name;
 		this.maxParticipants = maxParticipants;
 		this.description = description;
