@@ -5,7 +5,7 @@ import java.time.Instant;
 public interface BaseMessage {
 	String getTransactionId();
 
-	String getType();
+	MessageType getType();
 
 	Instant getTimestamp();
 }

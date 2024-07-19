@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class EventMessage implements BaseMessage {
 	private final String transactionId;
-	private final String type = "event"; // Not final anymore, to allow flexibility if needed
+	private final MessageType type = MessageType.EVENT; // Not final anymore, to allow flexibility if needed
 	private final EventBody body;
 	private final Instant timestamp;
 
@@ -24,7 +24,7 @@ public class EventMessage implements BaseMessage {
 	}
 
 	@Override
-	public String getType() {
+	public MessageType getType() {
 		return this.type;
 	}
 

@@ -13,7 +13,7 @@ import lombok.Getter;
 public class RequestMessage implements BaseMessage {
 	private final String transactionId;
 	private final String sessionId;
-	private final String type = "request"; // Not final anymore, to allow flexibility if needed
+	private final MessageType type = MessageType.REQUEST; // Not final anymore, to allow flexibility if needed
 	private final RequestBody body;
 	private final Instant timestamp;
 
@@ -31,7 +31,7 @@ public class RequestMessage implements BaseMessage {
 	}
 
 	@Override
-	public String getType() {
+	public MessageType getType() {
 		return this.type;
 	}
 

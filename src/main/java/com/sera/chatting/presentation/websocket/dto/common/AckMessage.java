@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class AckMessage implements BaseMessage {
 	private String transactionId;
-	private final String type = "ack "; // Not final anymore, to allow flexibility if needed
+	private final MessageType type = MessageType.ACK; // Not final anymore, to allow flexibility if needed
 	private AckBody body;
 	private Instant timestamp;
 
@@ -52,7 +52,7 @@ public class AckMessage implements BaseMessage {
 	}
 
 	@Override
-	public String getType() {
+	public MessageType getType() {
 		return this.type;
 	}
 

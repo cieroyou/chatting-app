@@ -3,6 +3,7 @@ package com.sera.chatting.common.converter;
 import java.time.Instant;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sera.chatting.common.exception.SocketMessageParsingException;
 import com.sera.chatting.presentation.websocket.dto.CreateRoomRequest;
 import com.sera.chatting.presentation.websocket.dto.JoinRoomRequest;
+import com.sera.chatting.presentation.websocket.dto.common.MessageType;
 import com.sera.chatting.presentation.websocket.dto.common.RequestBody;
 import com.sera.chatting.presentation.websocket.dto.common.RequestMessage;
 
@@ -32,7 +34,7 @@ public class RequestMessageConverter {
 	private static final String COMMAND = "command";
 	private static final String TYPE = "type";
 	private static final String BODY = "body";
-	private static final String REQUEST = "request";
+	private static final MessageType REQUEST = MessageType.REQUEST;
 
 	public RequestMessage convertToRequestMessage(WebSocketSession session, String jsonMessage) throws
 		SocketMessageParsingException {
@@ -56,11 +58,21 @@ public class RequestMessageConverter {
 	}
 
 	private void validateMessage(JsonNode rootNode, String socketSessionId) {
-		String type = rootNode.path(TYPE).asText();
+		String strType = rootNode.path(TYPE).asText();
 		JsonNode bodyNode = rootNode.path(BODY);
 		String sessionId = rootNode.path(SESSION_ID).asText();
+		if (!StringUtils.hasText(strType)) {
+			throw new SocketMessageParsingException("Missing type in message");
+		}
+		MessageType type;
+		try {
+			type = MessageType.fromValue(strType);
+		} catch (IllegalArgumentException e) {
+			throw new SocketMessageParsingException("Invalid message type: {}", strType);
+		}
+
 		if (!REQUEST.equals(type)) {
-			throw new SocketMessageParsingException("Invalid message type: {}", type);
+			throw new SocketMessageParsingException("Invalid message type: {}", strType);
 		}
 		if (!rootNode.has(SESSION_ID)) {
 			throw new SocketMessageParsingException("Missing session_id in message");
