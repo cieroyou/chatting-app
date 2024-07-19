@@ -76,6 +76,14 @@ public class AckBody<T extends AckData> implements MessageBody {
 			.build();
 	}
 
+	public static AckBody<EmptyAckData> fail(String message) {
+		return AckBody.<EmptyAckData>builder()
+			.result(Result.FAIL)
+			.message(message)
+			.errorCode(ErrorCode.SERVER_EXCEPTION.name())
+			.build();
+	}
+
 	public enum Result {
 		SUCCESS, FAIL
 	}

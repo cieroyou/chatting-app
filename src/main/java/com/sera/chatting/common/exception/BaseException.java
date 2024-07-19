@@ -21,20 +21,17 @@ public class BaseException extends RuntimeException {
         super(errorCode.getErrorMsg());
         this.errorCode = errorCode;
         this.errorMessage = errorCode.getErrorMsg();
-        log.error("[BaseException] errorCode: {}", errorCode);
     }
 
     public BaseException(String message, ErrorCode errorCode) {
         super(message);
         this.errorCode = errorCode;
         this.errorMessage = message;
-        log.error("[BaseException] message: {}, errorCode: {}", message, errorCode);
     }
 
     public BaseException(String message, ErrorCode errorCode, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
         this.errorMessage = message;
-        log.error("[BaseException] message: {}, errorCode: {}, cause: {}", message, errorCode, cause);
     }
 }

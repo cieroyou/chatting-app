@@ -85,8 +85,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
 			session.sendMessage(new TextMessage(ackMessageJson));
 		} catch (BaseException exception) {
-			log.error("handleTextMessage: {}", exception.getMessage());
+			// 기본 Exception
+			log.warn("[BaseException] sessionId: {}, message: {}, errorCode: {}",
+				session.getId(), exception.getMessage(), exception.getErrorCode());
 			var body = AckBody.fail(exception.getMessage(), exception.getErrorCode());
+			AckMessage ackMessage = new AckMessage(transactionId, body);
+			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
+			session.sendMessage(new TextMessage(ackMessageJson));
+		} catch (Exception ex) {
+			// 정의되지 않은 Unexpected Exception
+			log.error("[Exception] sessionId: {}, message: ", session.getId(), ex.fillInStackTrace());
+			var body = AckBody.fail(ex.getMessage());
 			AckMessage ackMessage = new AckMessage(transactionId, body);
 			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
 			session.sendMessage(new TextMessage(ackMessageJson));

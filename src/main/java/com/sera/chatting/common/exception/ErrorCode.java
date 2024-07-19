@@ -11,8 +11,9 @@ public enum ErrorCode {
 	// 400 - client-side Error
 	BAD_REQUEST("잘못된 요청입니다.", HttpStatus.BAD_REQUEST, 400),
 	ALREADY_A_PARTICIPANT("이미 참여한 방입니다.", HttpStatus.BAD_REQUEST, 400),
-	ROOM_FULL("방이 가득 찼습니다.", HttpStatus.BAD_REQUEST, 400);
+	ROOM_FULL("방이 가득 찼습니다.", HttpStatus.BAD_REQUEST, 400),
 
+	SERVER_EXCEPTION("서버 에러입니다.", HttpStatus.INTERNAL_SERVER_ERROR, 500);
 	private final String errorMsg;
 	private final HttpStatus httpStatus;
 	private final int code;
