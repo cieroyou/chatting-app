@@ -36,6 +36,12 @@ public class ChattingRoomFacade {
 		return new CreateRoomResponse(room.getChattingRoomId().getValue());
 	}
 
+	public RoomDetail getRoom(RoomId roomId) {
+		var room = roomReader.readByChattingRoomId(roomId);
+		var participants = participantReader.readByChattingRoomId(roomId);
+		return new RoomDetail(room, participants);
+
+	}
 	/**
 	 * 방 입장 요청
 	 */
@@ -43,7 +49,7 @@ public class ChattingRoomFacade {
 	public void addParticipant(RoomId roomId, UserId userId) {
 		var room = roomReader.readByChattingRoomId(roomId);
 		var participants = participantReader.readByChattingRoomId(roomId);
-		roomService.addParticipant(room, participants, userId);
+		roomService.addParticipant(room, userId);
 		participantStore.save(new Participant(userId, roomId));
 	}
 
