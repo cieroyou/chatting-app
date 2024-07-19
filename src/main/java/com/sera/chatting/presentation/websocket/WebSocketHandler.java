@@ -62,6 +62,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
 		String transactionId = "";
+		AckMessage ackMessage = null;
 		try {
 			String payload = textMessage.getPayload();
 			AckBody<AckData> body = null;
@@ -81,25 +82,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			}
 
 			// // 3. 리턴(Response)를 Json으로 변환하여 클라이언트에게 응답
-			AckMessage ackMessage = new AckMessage(requestMessage.getTransactionId(), body);
-			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
-			session.sendMessage(new TextMessage(ackMessageJson));
+			ackMessage = new AckMessage(requestMessage.getTransactionId(), body);
 		} catch (BaseException exception) {
 			// 기본 Exception
 			log.warn("[BaseException] sessionId: {}, message: {}, errorCode: {}",
 				session.getId(), exception.getMessage(), exception.getErrorCode());
 			var body = AckBody.fail(exception.getMessage(), exception.getErrorCode());
-			AckMessage ackMessage = new AckMessage(transactionId, body);
-			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
-			session.sendMessage(new TextMessage(ackMessageJson));
+			ackMessage = new AckMessage(transactionId, body);
 		} catch (Exception ex) {
 			// 정의되지 않은 Unexpected Exception
 			log.error("[Exception] sessionId: {}, message: ", session.getId(), ex.fillInStackTrace());
 			var body = AckBody.fail(ex.getMessage());
-			AckMessage ackMessage = new AckMessage(transactionId, body);
-			String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
-			session.sendMessage(new TextMessage(ackMessageJson));
+			ackMessage = new AckMessage(transactionId, body);
 		}
-
+		String ackMessageJson = ackMessageJsonConverter.convertToJson(ackMessage);
+		session.sendMessage(new TextMessage(ackMessageJson));
 	}
 }
