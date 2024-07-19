@@ -62,7 +62,10 @@ public class RequestMessageConverter {
 		if (!REQUEST.equals(type)) {
 			throw new SocketMessageParsingException("Invalid message type: {}", type);
 		}
-		if(!socketSessionId.equals(sessionId)) {
+		if (!rootNode.has(SESSION_ID)) {
+			throw new SocketMessageParsingException("Missing session_id in message");
+		}
+		if (!socketSessionId.equals(sessionId)) {
 			throw new SocketMessageParsingException("Invalid session id: {}", sessionId);
 		}
 		if (!rootNode.has(TRANSACTION_ID)) {

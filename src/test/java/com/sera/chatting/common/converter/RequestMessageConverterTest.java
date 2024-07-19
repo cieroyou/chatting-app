@@ -1,6 +1,7 @@
 package com.sera.chatting.common.converter;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.time.Instant;
 
@@ -41,8 +42,8 @@ class RequestMessageConverterTest {
 
 	private static final String INVALID_MESSAGE = "{\"transaction_id\":\"12345\", \"type\":\"invalid\", \"body\":{\"command\":\"create_room\"}}";
 
-	private String getSocketMessage(RequestBody body) throws JsonProcessingException {
-		RequestMessage message = new RequestMessage(TRANSACTION_ID, body, Instant.now());
+	private String getSocketMessage(RequestBody body, String sessionId) throws JsonProcessingException {
+		RequestMessage message = new RequestMessage(TRANSACTION_ID, sessionId, body, Instant.now());
 		return objectMapper.writeValueAsString(message);
 	}
 
@@ -56,9 +57,10 @@ class RequestMessageConverterTest {
 	@Test()
 	@DisplayName("유효한 Json 문자열메세지가 성공적으로 RequestMessage로 변환된다")
 	void convertToRequestMessage_Success() throws JsonProcessingException {
-		String validCreateRoomRequestMessage = getSocketMessage(CREATE_ROOM_REQUEST);
-
+		String sessionId = "shsjhdf2";
+		String validCreateRoomRequestMessage = getSocketMessage(CREATE_ROOM_REQUEST, sessionId);
 		// when
+		when(session.getId()).thenReturn(sessionId);
 		RequestMessage result = converter.convertToRequestMessage(session, validCreateRoomRequestMessage);
 		RequestBody body = result.getBody();
 		// then
@@ -83,20 +85,24 @@ class RequestMessageConverterTest {
 	@DisplayName("Exception is thrown when transaction_id is missing")
 	void convertToRequestMessage_MissingTransactionId_throwsSocketMessageParsingException() {
 		String jsonMessage = "{\"type\":\"request\", \"body\":{\"command\":\"create_room\"}}";
-		assertThrows(SocketMessageParsingException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
+		assertThrows(SocketMessageParsingException.class,
+			() -> converter.convertToRequestMessage(session, jsonMessage));
 	}
 
 	@Test
 	@DisplayName("Exception is thrown when command is missing in body")
 	void convertToRequestMessage_MissingCommand_throwsSocketMessageParsingException() {
 		String jsonMessage = "{\"transaction_id\":\"12345\", \"type\":\"request\", \"body\":{}}";
-		assertThrows(SocketMessageParsingException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
+		assertThrows(SocketMessageParsingException.class,
+			() -> converter.convertToRequestMessage(session, jsonMessage));
 	}
 
 	@Test
 	@DisplayName("Exception is thrown for unsupported command")
 	void convertToRequestMessage_UnsupportedCommand_throwsSocketMessageParsingException() {
 		String jsonMessage = "{\"transaction_id\":\"12345\", \"type\":\"request\", \"body\":{\"command\":\"unsupported_command\"}}";
-		assertThrows(SocketMessageParsingException.class, () -> converter.convertToRequestMessage(session, jsonMessage));
+		assertThrows(SocketMessageParsingException.class,
+			() -> converter.convertToRequestMessage(session, jsonMessage));
 	}
+
 }

@@ -28,6 +28,9 @@ class SessionManagerTest {
 	@Mock
 	private SessionEventListener mockSessionEventListener;
 
+	@Mock
+	private SessionEventPublisher mockSessionEventPublisher;
+
 	private Map<String, WebSocketSession> sessions;
 
 	private static final String ALREADY_EXISTING_SESSION_ID = "sessionId";
@@ -49,14 +52,14 @@ class SessionManagerTest {
 	void whenRemoveExistSession_thenRemoveSuccessAndOccurSessionClosedEvent() {
 		sessionManager.removeSession(ALREADY_EXISTING_SESSION_ID);
 		assertFalse(sessionManager.hasSession(ALREADY_EXISTING_SESSION_ID));
-		verify(mockSessionEventListener, times(1)).onSessionClosed(ALREADY_EXISTING_SESSION_ID);
+		verify(mockSessionEventPublisher, times(1)).publishSessionClosed(ALREADY_EXISTING_SESSION_ID);
 	}
 
 	@DisplayName("연결되지 않은 세션을 삭제하면_세션종료이벤트가_발생하지않는다")
 	@Test
 	void whenRemoveNonExistSession_thenNotOccurSessionClosedEvent() {
 		sessionManager.removeSession("nonExistentSessionId");
-		verify(mockSessionEventListener, never()).onSessionClosed(ALREADY_EXISTING_SESSION_ID);
+		verify(mockSessionEventPublisher, never()).publishSessionClosed(ALREADY_EXISTING_SESSION_ID);
 	}
 
 	@Test
